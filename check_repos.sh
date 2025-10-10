@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # ==============================================================================
-#  check_repos.sh (v2)
+#  check_repos.sh (v2.1 - Corrected Count)
 #
 #  - Scans all sibling directories (including itself) for Git repositories.
 #  - Reports if they have any local changes (modified, staged, or untracked).
-#  - Counts the total number of changed files.
+#  - Correctly counts the total number of changed files.
 #  - Lists the first 10 files with their status.
 #
 # ==============================================================================
@@ -40,9 +40,8 @@ for dir in "$PARENT_DIR"/*; do
 
             # The `-n` test checks if the 'changes' string is not empty.
             if [ -n "$changes" ]; then
-                # Count the total number of lines, which corresponds to the number of files.
-                # `echo -n` prevents adding an extra newline, ensuring an accurate count.
-                count=$(echo -n "$changes" | wc -l)
+                # *** FIX: Use `grep -c .` to correctly count non-empty lines. ***
+                count=$(echo -n "$changes" | grep -c .)
 
                 # Get the first 10 lines and indent them with sed for nice formatting.
                 file_list=$(echo "$changes" | head -n 10 | sed 's/^/    /')
